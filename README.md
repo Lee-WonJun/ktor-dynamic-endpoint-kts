@@ -19,3 +19,84 @@
 ### Important Note
 
 For production use, ensure that dynamic route creation is disabled or restricted due to potential security and stability concerns. This feature is best suited for development, testing, and educational purposes.
+
+
+### Example script
+- simple
+```kotlin
+val greeting = "Hello, World!"
+greeting
+```
+![image](https://github.com/user-attachments/assets/f9278821-47ee-40ee-b2b6-58520a5fca1e)
+
+
+- monitoring
+```kotlin
+import java.lang.management.ManagementFactory
+import java.sql.DriverManager
+
+val memoryMXBean = ManagementFactory.getMemoryMXBean()
+val heapMemoryUsage = memoryMXBean.heapMemoryUsage
+val nonHeapMemoryUsage = memoryMXBean.nonHeapMemoryUsage
+
+val memoryStatus = """
+    Heap Memory:
+        Init: ${heapMemoryUsage.init / 1024 / 1024} MB
+        Used: ${heapMemoryUsage.used / 1024 / 1024} MB
+        Committed: ${heapMemoryUsage.committed / 1024 / 1024} MB
+        Max: ${heapMemoryUsage.max / 1024 / 1024} MB
+
+    Non-Heap Memory:
+        Init: ${nonHeapMemoryUsage.init / 1024 / 1024} MB
+        Used: ${nonHeapMemoryUsage.used / 1024 / 1024} MB
+        Committed: ${nonHeapMemoryUsage.committed / 1024 / 1024} MB
+        Max: ${nonHeapMemoryUsage.max / 1024 / 1024} MB
+"""
+
+val dbStatus = try {
+    val connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/your_database", "your_username", "your_password")
+    val statement = connection.createStatement()
+    val resultSet = statement.executeQuery("SELECT 1")
+    if (resultSet.next()) {
+        "Database connection successful"
+    } else {
+        "Database connection failed"
+    }
+} catch (e: Exception) {
+    "Database connection error: ${e.message}"
+}
+
+val status = """
+    Memory Status:
+    $memoryStatus
+
+    Database Status:
+    $dbStatus
+"""
+
+status
+```
+
+![image](https://github.com/user-attachments/assets/b84bc835-1ba8-48b6-ab50-85a5fcefaca6)
+
+
+- reflection
+```kotlin
+import dynamicEndpoint.objects.DynamicRoute
+
+val x = try {
+    val fnsfield = DynamicRoute::class.java.getDeclaredField("fns")
+    fnsfield.toString()
+
+    fnsfield.setAccessible(true);
+    val fns = fnsfield.get(DynamicRoute)
+
+    fns.toString()
+
+} catch (e: Exception) {
+    "Error: ${e.message}"
+}
+
+x
+```
+![image](https://github.com/user-attachments/assets/b51e729a-efb4-4095-a412-d10b60e558a7)
